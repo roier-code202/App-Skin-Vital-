@@ -35,18 +35,22 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap');
+
 .mobile-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100vw;
-  background: #222;
-  border-top: 1px solid #333;
+  background: #FFF8F0; /* Marfil */
+  border-top: 2px solid #B76E79; /* Dorado Rosado */
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 0.3rem 0;
   z-index: 100;
+  font-family: 'Montserrat', Arial, sans-serif;
+  box-shadow: 0 -2px 12px 0 #fad6c4cc;
 }
 .mobile-nav button {
   background: none;
@@ -55,18 +59,26 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
+  color: #5C4033; /* Marrón Nude */
   font-size: 1.2rem;
   padding: 0.3rem 0;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color 0.2s, background 0.2s;
+  font-family: 'Montserrat', Arial, sans-serif;
+  border-radius: 10px 10px 0 0;
 }
 .mobile-nav button.active,
 .mobile-nav button:hover {
-  color: #42b983;
+  color: #B76E79; /* Dorado Rosado */
+  background: #F8E1E7; /* Rosa Palo */
+}
+.mobile-nav span {
+  font-size: 1.4rem;
 }
 .mobile-nav small {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 0.5px;
 }
 @media (min-width: 700px) {
   .mobile-nav {
