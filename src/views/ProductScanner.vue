@@ -1,7 +1,10 @@
 <template>
   <div class="scanner">
-    <h1>Escanear producto</h1>
-    <form @submit.prevent="checkProduct">
+    <h1>Escáner de productos</h1>
+    <div v-if="!userSkinType" class="alert" role="alert">
+      Realiza el quiz para conocer tu tipo de piel y poder usar el escáner.
+    </div>
+    <form v-else @submit.prevent="checkProduct">
       <input v-model="barcode" type="text" placeholder="Escanea o ingresa el código de barras" required />
       <button type="submit">Buscar</button>
     </form>

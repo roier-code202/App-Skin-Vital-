@@ -46,7 +46,12 @@ export default {
     saveChat() {
       localStorage.setItem('supportChat', JSON.stringify(this.messages));
     },
-  },
+    logout() {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('supportChat');
+      this.$router.push('/login');
+    }
+  }
 };
 </script>
 

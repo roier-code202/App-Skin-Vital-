@@ -37,6 +37,14 @@
       <button @click="restartQuiz">Repetir cuestionario</button>
       <button @click="$router.push('/')">Volver al inicio</button>
     </div>
+    <div v-if="history.length">
+      <h3>Historial de resultados</h3>
+      <ul>
+        <li v-for="(item, idx) in history" :key="idx">
+          {{ item.type }} - {{ item.date }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -49,6 +57,7 @@ export default {
       answers: [],
       showResult: false,
       result: {},
+      history: JSON.parse(localStorage.getItem('quizHistory') || '[]'),
       questions: [
         {
           text: '¿Cómo se siente tu piel al final del día?',

@@ -8,7 +8,12 @@
     <h2>Equipo</h2>
     <ul>
       <li>Roger - Desarrollador</li>
-      <li>Equipo de IA y diseño</li>
+      <li>Cristian - Diseño</li>
+      <li>Diego - Desarrollador</li>
+      <li>Berta - Diseño</li>
+      <li>Andromeda - Diseño</li>
+      <li>Luis - Diseño</li>
+
     </ul>
     <h2>Contacto</h2>
     <p>¿Tienes dudas o sugerencias? Escríbenos a <a href="mailto:soporte@skincareapp.com">soporte@skincareapp.com</a></p>

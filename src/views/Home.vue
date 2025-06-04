@@ -1,49 +1,13 @@
 <template>
   <div class="enhanced-home">
     <Logo />
-    <h1 v-if="user">¡Bienvenido, {{ user.name || 'Usuario' }}!</h1>
-    <h1 v-else>Consejos para el cuidado de la piel</h1>
+    <h1>¿No sabes tu tipo de piel?</h1>
     
     <!-- Botones de navegación -->
-    <button
-      v-if="!user"
-      class="action-btn login-btn"
-      @click="$router.push('/login')"
-    >Iniciar sesión</button>
-    <button
-      v-else
-      class="action-btn profile-btn"
-      @click="$router.push('/profile')"
-    >Mi perfil</button>
     <button class="action-btn quiz-btn" @click="$router.push('/quiz')">
       {{ user ? 'Haz el cuestionario' : '¿No sabes tu tipo de piel? Haz el cuestionario' }}
     </button>
-    <button class="action-btn add-btn" @click="$router.push('/add')">Agregar consejo</button>
-
-    <!-- Estado de carga o error -->
-    <div v-if="loading" class="loading">Cargando datos...</div>
-    <div v-else-if="error" class="error">{{ error }}</div>
     
-    <!-- Sección de rutinas (solo para usuarios autenticados) -->
-    <div v-if="user" class="routines-section">
-      <h2>Mis rutinas</h2>
-      <ul v-if="routines.length">
-        <li v-for="(routine, idx) in routines" :key="idx">{{ routine }}</li>
-      </ul>
-      <p v-else>No tienes rutinas aún.</p>
-    </div>
-
-    <!-- Sección de consejos guardados (solo para usuarios autenticados) -->
-    <div v-if="user" class="tips-section">
-      <h2>Mis consejos guardados</h2>
-      <SkincareTip v-for="tip in savedTips" :key="tip.id" :tip="tip" />
-    </div>
-
-    <!-- Sección de todos los consejos -->
-    <div class="all-tips-section">
-      <h2>Todos los consejos</h2>
-      <SkincareTip v-for="tip in filteredTips" :key="tip.id" :tip="tip" />
-    </div>
   </div>
 </template>
 
@@ -96,7 +60,6 @@ export default {
   max-width: 500px;
   margin: 0 auto;
   padding: 1rem 0.5rem 2rem 0.5rem;
-  background: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   min-height: 100vh;
