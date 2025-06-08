@@ -7,10 +7,7 @@
       <button type="submit">Agregar</button>
     </form>
     <button class="back" @click="$router.push('/')">Volver</button>
-    <button @click="$router.push('/settings')" :class="{ active: isActive('/settings') }">
-      <span>⚙️</span>
-      <small>Config</small>
-    </button>
+    <button @click="$router.push('/settings')" class="settings-btn">Configuración</button>
   </div>
 </template>
 

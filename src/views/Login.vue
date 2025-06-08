@@ -1,56 +1,88 @@
 <template>
-  <div class="login">
-    <h1>Iniciar sesión</h1>
+  <div class="login card">
+    <h2>Iniciar sesión</h2>
     <form @submit.prevent="login">
-      <input v-model="email" type="email" placeholder="Correo electrónico" required />
-      <input v-model="password" type="password" placeholder="Contraseña" required />
-      <div v-if="error" class="error">{{ error }}</div>
-      <button type="submit">Entrar</button>
+      <label for="email">Correo electrónico</label>
+      <input id="email" v-model="email" type="email" placeholder="Correo electrónico" required />
+      <label for="password">Contraseña</label>
+      <input id="password" v-model="password" type="password" placeholder="Contraseña" required />
+      <div v-if="errorMsg" role="alert" class="error-msg">{{ errorMsg }}</div>
+      <button type="submit" class="main-btn">Entrar</button>
     </form>
     <div class="social-login">
-      <button class="google" @click="loginWith('Google')">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google" /> Iniciar sesión con Google
-      </button>
-      <button class="facebook" @click="loginWith('Facebook')">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg" alt="Facebook" /> Iniciar sesión con Facebook
-      </button>
-      <button class="apple" @click="loginWith('Apple')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" /> Iniciar sesión con Apple
-      </button>
+      <button @click="loginWithGoogle" class="social-btn google">Entrar con Google</button>
+      <button @click="loginWithFacebook" class="social-btn facebook">Entrar con Facebook</button>
+      <button @click="loginWithApple" class="social-btn apple">Entrar con Apple</button>
     </div>
-    <button class="forgot" @click="forgotPassword">Olvidé mi contraseña</button>
-    <button class="back" @click="$router.push('/')">Volver al inicio</button>
+    <button class="link-btn" @click="$router.push('/register')">Crear cuenta</button>
+    <button class="main-btn" @click="$router.push('/')">Volver al inicio</button>
   </div>
 </template>
 
 <script>
+import { auth } from "@/firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
 export default {
   name: 'Login',
   data() {
     return {
       email: '',
       password: '',
-      error: '',
+      errorMsg: ''
     };
   },
   methods: {
     login() {
-      // Simulación de usuario (para MVP)
-      const user = { email: 'usuario@demo.com', password: '123456' };
-      if (this.email === user.email && this.password === user.password) {
-        localStorage.setItem('user', JSON.stringify({ email: this.email }));
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) {
+        this.errorMsg = 'No existe una cuenta registrada. Por favor, regístrate primero.';
+        this.$router.push('/register');
+        return;
+      }
+      if (user.email === this.email && user.password === this.password) {
+        localStorage.setItem('loggedIn', 'true');
+        this.errorMsg = '';
         this.$router.push('/profile');
       } else {
-        this.error = 'Correo o contraseña incorrectos';
+        this.errorMsg = 'Correo o contraseña incorrectos.';
       }
     },
-    forgotPassword() {
-      alert('Funcionalidad de recuperación de contraseña próximamente.');
+    async loginWithGoogle() {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        // Guarda el usuario en localStorage
+        const user = result.user;
+        localStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('firebaseUser', JSON.stringify({
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          provider: user.providerId
+        }));
+        this.$router.push("/profile");
+      } catch (e) {
+        this.errorMsg = "Error con Google: " + e.message;
+      }
     },
-    loginWith(provider) {
-      // Simulación de login social
-      localStorage.setItem('user', JSON.stringify({ email: provider + '@social.com', provider }));
-      this.$router.push('/profile');
+    async loginWithFacebook() {
+      const provider = new FacebookAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+        this.$router.push("/profile");
+      } catch (e) {
+        this.errorMsg = "Error con Facebook: " + e.message;
+      }
+    },
+    async loginWithApple() {
+      const provider = new OAuthProvider("apple.com");
+      try {
+        await signInWithPopup(auth, provider);
+        this.$router.push("/profile");
+      } catch (e) {
+        this.errorMsg = "Error con Apple: " + e.message;
+      }
     },
   },
 };
@@ -58,89 +90,92 @@ export default {
 
 <style scoped>
 .login {
-  max-width: 400px;
+  max-width: 500px;
   margin: 2rem auto;
-  padding: 1rem;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 1.5rem 1rem;
+  border-radius: 14px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+form {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-h1 {
-  text-align: center;
-  color: #2c3e50;
-  font-size: 1.3rem;
-}
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
+  margin-bottom: 1rem;
 }
 input {
-  font-size: 1rem;
-  padding: 0.7rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-}
-button {
-  background: #42b983;
-  color: #fff;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
   border: none;
-  padding: 0.8rem;
-  border-radius: 6px;
   font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
+  margin-bottom: 0.3rem;
 }
-button:hover {
-  background: #369870;
-}
-.forgot {
-  background: #e0e0e0;
-  color: #333;
-  margin-top: 0.5rem;
-}
-.back {
-  background: #2980b9;
-  color: #fff;
-  margin-top: 0.5rem;
-}
-.error {
-  color: #e74c3c;
-  font-size: 0.95rem;
-  text-align: center;
+.main-btn {
+  width: 100%;
+  margin-bottom: 1rem;
 }
 .social-login {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  margin: 1rem 0;
+  margin-bottom: 1rem;
 }
-.social-login button {
+.social-btn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  font-size: 1rem;
-  padding: 0.7rem;
-  border: none;
-  border-radius: 6px;
+  justify-content: flex-start;
+  font-family: inherit;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.social-btn .icon {
+  display: flex;
+  align-items: center;
+  margin-right: 0.7rem;
+}
+.google {
+  background: #d44638;
   color: #fff;
-  transition: background 0.2s;
 }
-.social-login .google {
-  background: #db4437;
-}
-.social-login .facebook {
+.facebook {
   background: #4267B2;
+  color: #fff;
 }
-.social-login .apple {
+.apple {
   background: #222;
+  color: #fff;
 }
-.social-login img {
-  width: 22px;
-  height: 22px;
+.link-btn {
+  width: 100%;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.error-msg {
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 700px) {
+  .login {
+    margin: 1rem 0.2rem;
+    padding: 1rem 0.5rem;
+  }
 }
 </style>

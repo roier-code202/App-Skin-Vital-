@@ -5,7 +5,7 @@ import Home from '@/views/Home.vue';
 import AddTip from '@/views/AddTip.vue';
 import Quiz from '@/views/Quiz.vue';
 import Profile from '@/views/Profile.vue';
-import Login from '@/views/Login.vue'; // Agrega esta línea
+import Login from '@/views/Login.vue';
 import Settings from '@/views/Settings.vue';
 import Calendar from '@/views/Calendar.vue';
 import Articles from '@/views/Articles.vue';
@@ -13,6 +13,7 @@ import Videos from '@/views/Videos.vue';
 import SupportChat from '@/views/SupportChat.vue';
 import ProductScanner from '@/views/ProductScanner.vue';
 import About from '@/views/About.vue';
+import Register from '@/views/Register.vue';
 
 const routes = [
   {
@@ -75,18 +76,25 @@ const routes = [
     name: 'About',
     component: About,
   },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 
-// Navigation guard para proteger la ruta de perfil
+// Guard global para rutas privadas
 router.beforeEach((to, from, next) => {
-  const user = localStorage.getItem('user');
-  if (to.name === 'Profile' && !user) {
-    next({ name: 'Login' });
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  // Rutas privadas
+  const privatePages = ['/profile'];
+  if (privatePages.includes(to.path) && !loggedIn) {
+    next('/login');
   } else {
     next();
   }
